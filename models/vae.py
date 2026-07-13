@@ -110,3 +110,33 @@ class Decoder(nn.Module):
         x = self.decoder(x)
 
         return x
+    class VAE(nn.Module):
+    """
+    Complete Variational Autoencoder
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self.encoder = Encoder()
+        self.decoder = Decoder()
+
+    def reparameterize(self, mu, logvar):
+        """
+        Reparameterization trick:
+        z = mu + sigma * epsilon
+        """
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+
+        return mu + eps * std
+
+    def forward(self, x):
+
+        mu, logvar = self.encoder(x)
+
+        z = self.reparameterize(mu, logvar)
+
+        reconstruction = self.decoder(z)
+
+        return reconstruction, mu, logvar
