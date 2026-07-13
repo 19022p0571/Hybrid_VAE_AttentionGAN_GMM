@@ -253,6 +253,110 @@ class Sentinel2Preprocessor:
         plt.axis("off")
 
         plt.show()
+    def extract_patches(self, patch_size=config.PATCH_SIZE, stride=None):
+        """
+        Extract non-overlapping or overlapping patches.
+        """
+
+        if self.image is None:
+            raise ValueError("Image not loaded.")
+
+        if stride is None:
+            stride = patch_size
+
+        patches = []
+        metadata = []
+
+        height, width, _ = self.image.shape
+
+        for y in range(0, height - patch_size + 1, stride):
+            for x in range(0, width - patch_size + 1, stride):
+
+                patch = self.image[
+                    y:y + patch_size,
+                    x:x + patch_size,
+                    :
+                ]
+
+                patches.append(patch)
+
+                metadata.append({
+                    "x": x,
+                    "y": y
+                })
+
+        patches = np.asarray(patches, dtype=np.float32)
+
+        metadata = pd.DataFrame(metadata)
+
+        print(f"Extracted {len(patches)} patches.")
+        print("Patch Shape:", patches.shape)
+
+        return patches, metadata
+
+    def split_dataset(
+        self,
+        patches,
+        metadata,
+        test_size=0.2,
+        random_state=config.SEED
+    ):
+        """
+        Split patches into training and testing sets.
+        """
+
+        train_patches, test_patches, train_meta, test_meta = train_test_split(
+            patches,
+            metadata,
+            test_size=test_size,
+            random_state=random_state,
+            shuffle=True
+        )
+
+        return (
+            train_patches,
+            test_patches,
+            train_meta,
+            test_meta
+        )
+
+    def save_dataset(
+        self,
+        train_patches,
+        test_patches,
+        train_meta,
+        test_meta,
+        output_dir=config.DATA_DIR
+    ):
+        """
+        Save dataset to disk.
+        """
+
+        os.makedirs(output_dir, exist_ok=True)
+
+        np.save(
+            os.path.join(output_dir, "train_patches.npy"),
+            train_patches
+        )
+
+        np.save(
+            os.path.join(output_dir, "test_patches.npy"),
+            test_patches
+        )
+
+        train_meta.to_csv(
+            os.path.join(output_dir, "train_metadata.csv"),
+            index=False
+        )
+
+        test_meta.to_csv(
+            os.path.join(output_dir, "test_metadata.csv"),
+            index=False
+        )
+
+        print("\nDataset saved successfully.")
+        print(f"Training patches: {len(train_patches)}")
+        print(f"Testing patches : {len(test_patches)}")
 
 
 
