@@ -7,6 +7,10 @@ Main training script for Hybrid VAE-AttentionGAN-GMM.
 from utils.dataset import create_dataloader
 from models.vae import VAE
 from trainer.vae_trainer import VAETrainer
+from models.generator import Generator
+from models.discriminator import Discriminator
+from trainer.gan_trainer import GANTrainer
+import os
 
 import config
 
