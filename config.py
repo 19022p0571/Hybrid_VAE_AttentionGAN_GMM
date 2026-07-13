@@ -49,11 +49,12 @@ NUM_CLASSES = 5
 # ==========================================================
 # Training Parameters
 # ==========================================================
-
+NUM_EPOCHS = 10
+LEARNING_RATE = 0.0002
 BATCH_SIZE = 16
-EPOCHS = 100
-LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 1e-5
+LATENT_DIM = 100
+NUM_CHANNELS = 6
 NUM_WORKERS = 0
 
 # ==========================================================
