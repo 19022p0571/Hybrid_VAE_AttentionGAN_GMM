@@ -42,8 +42,8 @@ class GANTrainer:
         total_g_loss = 0.0
         total_d_loss = 0.0
 
-        for real_images in self.train_loader:
-
+        for batch_idx, real_images in enumerate(self.train_loader):
+            
             real_images = real_images.to(config.DEVICE)
 
             batch_size = real_images.size(0)
@@ -116,6 +116,8 @@ class GANTrainer:
             total_d_loss += d_loss.item()
             total_g_loss += g_loss.item()
 
+        if batch_idx == 0:
+    break
         n = len(self.train_loader)
 
         return {
