@@ -1,0 +1,47 @@
+"""
+train.py
+
+Main training script for Hybrid VAE-AttentionGAN-GMM.
+"""
+
+from utils.dataset import create_dataloader
+from models.vae import VAE
+from trainer.vae_trainer import VAETrainer
+
+import config
+
+
+def main():
+
+    print("=" * 60)
+    print("Hybrid VAE-AttentionGAN-GMM")
+    print("=" * 60)
+
+    print("Loading dataset...")
+
+    train_loader = create_dataloader(config.TRAIN_DATA)
+
+    print("Dataset loaded.")
+
+    print("Initializing VAE...")
+
+    vae = VAE()
+
+    trainer = VAETrainer(
+        vae,
+        train_loader
+    )
+
+    history = trainer.train(
+        epochs=config.NUM_EPOCHS
+    )
+
+    trainer.save_model("vae_model.pth")
+
+    print("Training completed successfully.")
+
+    return history
+
+
+if __name__ == "__main__":
+    main()
