@@ -60,9 +60,9 @@ class GANTrainer:
                 device=config.DEVICE
             )
 
-            # -------------------------
+            # ---------------------
             # Train Discriminator
-            # -------------------------
+            # ---------------------
 
             self.optimizer_d.zero_grad()
 
@@ -96,9 +96,9 @@ class GANTrainer:
 
             self.optimizer_d.step()
 
-            # -------------------------
+            # ---------------------
             # Train Generator
-            # -------------------------
+            # ---------------------
 
             self.optimizer_g.zero_grad()
 
