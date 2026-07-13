@@ -141,3 +141,30 @@ class VAE(nn.Module):
         reconstruction = self.decoder(z)
 
         return reconstruction, mu, logvar
+import torch.nn.functional as F
+
+
+def vae_loss(reconstruction, target, mu, logvar):
+    """
+    Computes the Variational Autoencoder loss.
+
+    Total Loss = Reconstruction Loss + KL Divergence
+    """
+
+    reconstruction_loss = F.mse_loss(
+        reconstruction,
+        target,
+        reduction="mean"
+    )
+
+    kl_loss = -0.5 * torch.mean(
+        1 + logvar - mu.pow(2) - logvar.exp()
+    )
+
+    total_loss = reconstruction_loss + kl_loss
+
+    return {
+        "total_loss": total_loss,
+        "reconstruction_loss": reconstruction_loss,
+        "kl_loss": kl_loss
+    }
