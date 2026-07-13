@@ -357,7 +357,7 @@ class Sentinel2Preprocessor:
         print("\nDataset saved successfully.")
         print(f"Training patches: {len(train_patches)}")
         print(f"Testing patches : {len(test_patches)}")
-      def run_pipeline(
+    def run_pipeline(
         self,
         patch_size=config.PATCH_SIZE,
         stride=None,
