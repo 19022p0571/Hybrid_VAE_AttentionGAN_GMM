@@ -110,6 +110,7 @@ class Decoder(nn.Module):
         x = self.decoder(x)
 
         return x
+        
 class VAE(nn.Module):
     """
     Complete Variational Autoencoder
