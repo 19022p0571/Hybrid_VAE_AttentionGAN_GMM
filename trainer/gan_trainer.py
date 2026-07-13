@@ -42,72 +42,25 @@ class GANTrainer:
         total_g_loss = 0.0
         total_d_loss = 0.0
 
-        for batch_idx, real_images in enumerate(self.train_loader):
-            
+        for real_images in self.train_loader:
+
             real_images = real_images.to(config.DEVICE)
 
             batch_size = real_images.size(0)
 
             real_labels = torch.ones(
-                batch_size,
-                1,
+                batch_size, 1,
                 device=config.DEVICE
             )
 
             fake_labels = torch.zeros(
-                batch_size,
-                1,
+                batch_size, 1,
                 device=config.DEVICE
             )
-    def train(self, epochs):
 
-        history = {
-            "generator_loss": [],
-            "discriminator_loss": []
-        }
-
-        print("=" * 60)
-        print("Starting GAN Training")
-        print("=" * 60)
-
-        for epoch in range(epochs):
-
-            metrics = self.train_epoch()
-
-            history["generator_loss"].append(
-                metrics["generator_loss"]
-            )
-
-            history["discriminator_loss"].append(
-                metrics["discriminator_loss"]
-            )
-
-            print(
-                f"Epoch [{epoch+1}/{epochs}] "
-                f"G Loss: {metrics['generator_loss']:.4f} | "
-                f"D Loss: {metrics['discriminator_loss']:.4f}"
-            )
-
-        return history
-
-
-    def save_generator(self, path):
-
-        torch.save(
-            self.generator.state_dict(),
-            path
-        )
-
-
-    def save_discriminator(self, path):
-
-        torch.save(
-            self.discriminator.state_dict(),
-            path
-        )
-            # ---------------------
+            # -------------------------
             # Train Discriminator
-            # ---------------------
+            # -------------------------
 
             self.optimizer_d.zero_grad()
 
@@ -141,9 +94,9 @@ class GANTrainer:
 
             self.optimizer_d.step()
 
-            # ---------------------
+            # -------------------------
             # Train Generator
-            # ---------------------
+            # -------------------------
 
             self.optimizer_g.zero_grad()
 
@@ -161,11 +114,54 @@ class GANTrainer:
             total_d_loss += d_loss.item()
             total_g_loss += g_loss.item()
 
-        if batch_idx == 0:
-    break
         n = len(self.train_loader)
 
         return {
             "generator_loss": total_g_loss / n,
             "discriminator_loss": total_d_loss / n
         }
+
+    def train(self, epochs):
+
+        history = {
+            "generator_loss": [],
+            "discriminator_loss": []
+        }
+
+        print("=" * 60)
+        print("Starting GAN Training")
+        print("=" * 60)
+
+        for epoch in range(epochs):
+
+            metrics = self.train_epoch()
+
+            history["generator_loss"].append(
+                metrics["generator_loss"]
+            )
+
+            history["discriminator_loss"].append(
+                metrics["discriminator_loss"]
+            )
+
+            print(
+                f"Epoch [{epoch+1}/{epochs}] "
+                f"G Loss: {metrics['generator_loss']:.4f} | "
+                f"D Loss: {metrics['discriminator_loss']:.4f}"
+            )
+
+        return history
+
+    def save_generator(self, path):
+
+        torch.save(
+            self.generator.state_dict(),
+            path
+        )
+
+    def save_discriminator(self, path):
+
+        torch.save(
+            self.discriminator.state_dict(),
+            path
+        )
