@@ -40,7 +40,9 @@ def main():
         epochs=config.NUM_EPOCHS
     )
 
-    trainer.save_model("vae_model.pth")
+    os.makedirs("checkpoints", exist_ok=True)
+
+    trainer.save_model("checkpoints/vae_model.pth")
 
     print("Training completed successfully.")
 
