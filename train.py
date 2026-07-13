@@ -50,11 +50,24 @@ def main():
     discriminator = Discriminator()
 
     gan_trainer = GANTrainer(
-    generator,
-    discriminator,
-    train_loader
+        generator,
+        discriminator,
+        train_loader
     )
 
+    gan_history = gan_trainer.train(
+    epochs=config.NUM_EPOCHS
+   )
+
+    gan_trainer.save_generator(
+    "checkpoints/generator.pth"
+   )
+
+   gan_trainer.save_discriminator(
+   "checkpoints/discriminator.pth"
+  )
+
+   print("\nGAN training completed successfully.")
     gan_history = gan_trainer
     print("Training completed successfully.")
 
