@@ -69,7 +69,7 @@ class VAETrainer:
         }
 
 
-       def train(self, epochs):
+    def train(self, epochs):
 
         history = []
 
