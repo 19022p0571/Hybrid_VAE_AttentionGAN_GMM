@@ -69,23 +69,7 @@ class VAETrainer:
         }
 
 
-class VAETrainer:
-
-    def __init__(self, model, train_loader):
-        ...
-    
-    def train_epoch(self):
-        ...
-        return {
-            "loss": total_loss / n,
-            "reconstruction": total_reconstruction / n,
-            "kl": total_kl / n
-        }
-
-    def train(self, epochs):
-        """
-        Train the VAE for multiple epochs.
-        """
+       def train(self, epochs):
 
         history = []
 
@@ -113,13 +97,7 @@ class VAETrainer:
         return history
 
     def save_model(self, filepath):
-        """
-        Save trained VAE model.
-        """
 
-        torch.save(
-            self.model.state_dict(),
-            filepath
-        )
+        torch.save(self.model.state_dict(), filepath)
 
         print(f"Model saved to: {filepath}")
