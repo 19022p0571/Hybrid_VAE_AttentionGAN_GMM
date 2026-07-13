@@ -59,7 +59,52 @@ class GANTrainer:
                 1,
                 device=config.DEVICE
             )
+    def train(self, epochs):
 
+        history = {
+            "generator_loss": [],
+            "discriminator_loss": []
+        }
+
+        print("=" * 60)
+        print("Starting GAN Training")
+        print("=" * 60)
+
+        for epoch in range(epochs):
+
+            metrics = self.train_epoch()
+
+            history["generator_loss"].append(
+                metrics["generator_loss"]
+            )
+
+            history["discriminator_loss"].append(
+                metrics["discriminator_loss"]
+            )
+
+            print(
+                f"Epoch [{epoch+1}/{epochs}] "
+                f"G Loss: {metrics['generator_loss']:.4f} | "
+                f"D Loss: {metrics['discriminator_loss']:.4f}"
+            )
+
+        return history
+
+
+    def save_generator(self, path):
+
+        torch.save(
+            self.generator.state_dict(),
+            path
+        )
+
+
+    def save_discriminator(self, path):
+
+        torch.save(
+            self.discriminator.state_dict(),
+            path
+        )
             # ---------------------
             # Train Discriminator
             # ---------------------
