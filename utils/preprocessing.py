@@ -357,7 +357,76 @@ class Sentinel2Preprocessor:
         print("\nDataset saved successfully.")
         print(f"Training patches: {len(train_patches)}")
         print(f"Testing patches : {len(test_patches)}")
+      def run_pipeline(
+        self,
+        patch_size=config.PATCH_SIZE,
+        stride=None,
+        test_size=0.2
+    ):
+        """
+        Complete Sentinel-2 preprocessing pipeline.
+        """
 
+        print("=" * 60)
+        print("Hybrid VAE-AttentionGAN-GMM")
+        print("Sentinel-2 Preprocessing Pipeline")
+        print("=" * 60)
+
+        # Step 1
+        print("\n[1/7] Locating folders...")
+        self.locate_folders()
+
+        # Step 2
+        print("\n[2/7] Locating band files...")
+        self.locate_band_files()
+
+        # Step 3
+        print("\n[3/7] Loading bands...")
+        self.load_bands()
+
+        # Step 4
+        print("\n[4/7] Normalizing image...")
+        self.normalize()
+
+        # Step 5
+        print("\n[5/7] Extracting patches...")
+        patches, metadata = self.extract_patches(
+            patch_size=patch_size,
+            stride=stride
+        )
+
+        # Step 6
+        print("\n[6/7] Splitting dataset...")
+        (
+            train_patches,
+            test_patches,
+            train_meta,
+            test_meta
+        ) = self.split_dataset(
+            patches,
+            metadata,
+            test_size=test_size
+        )
+
+        # Step 7
+        print("\n[7/7] Saving dataset...")
+        self.save_dataset(
+            train_patches,
+            test_patches,
+            train_meta,
+            test_meta
+        )
+
+        print("\n" + "=" * 60)
+        print("Preprocessing completed successfully.")
+        print("=" * 60)
+
+        return {
+            "train_patches": train_patches,
+            "test_patches": test_patches,
+            "train_metadata": train_meta,
+            "test_metadata": test_meta
+        }
 
 
 
