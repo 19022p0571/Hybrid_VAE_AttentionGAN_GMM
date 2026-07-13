@@ -116,13 +116,13 @@ class VAE(nn.Module):
     Complete Variational Autoencoder
     """
 
- def __init__(self):
+    def __init__(self):
         super().__init__()
 
         self.encoder = Encoder()
         self.decoder = Decoder()
 
-def reparameterize(self, mu, logvar):
+    def reparameterize(self, mu, logvar):
         """
         Reparameterization trick:
         z = mu + sigma * epsilon
@@ -132,7 +132,7 @@ def reparameterize(self, mu, logvar):
 
         return mu + eps * std
 
-def forward(self, x):
+    def forward(self, x):
 
         mu, logvar = self.encoder(x)
 
