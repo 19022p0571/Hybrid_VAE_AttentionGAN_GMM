@@ -1,0 +1,26 @@
+name: hybrid_vae_attentiongan_gmm
+
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.11
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - opencv
+  - rasterio
+  - pillow
+  - tqdm
+  - jupyter
+  - notebook
+  - pip:
+      - torch
+      - torchvision
+      - tifffile
+      - imageio
