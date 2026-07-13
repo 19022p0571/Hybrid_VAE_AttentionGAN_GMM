@@ -4,15 +4,18 @@ train.py
 Main training script for Hybrid VAE-AttentionGAN-GMM.
 """
 
-from utils.dataset import create_dataloader
-from models.vae import VAE
-from trainer.vae_trainer import VAETrainer
-from models.generator import Generator
-from models.discriminator import Discriminator
-from trainer.gan_trainer import GANTrainer
 import os
 
 import config
+
+from utils.dataset import create_dataloader
+
+from models.vae import VAE
+from models.generator import Generator
+from models.discriminator import Discriminator
+
+from trainer.vae_trainer import VAETrainer
+from trainer.gan_trainer import GANTrainer
 
 
 def main():
@@ -21,28 +24,49 @@ def main():
     print("Hybrid VAE-AttentionGAN-GMM")
     print("=" * 60)
 
+    # ----------------------------------------
+    # Load Dataset
+    # ----------------------------------------
+
     print("Loading dataset...")
 
     train_loader = create_dataloader(config.TRAIN_DATA)
 
     print("Dataset loaded.")
 
-    print("Initializing VAE...")
+    # ----------------------------------------
+    # Create Checkpoint Folder
+    # ----------------------------------------
+
+    os.makedirs("checkpoints", exist_ok=True)
+
+    # ----------------------------------------
+    # Train VAE
+    # ----------------------------------------
+
+    print("\nInitializing VAE...")
 
     vae = VAE()
 
-    trainer = VAETrainer(
+    vae_trainer = VAETrainer(
         vae,
         train_loader
     )
 
-    history = trainer.train(
+    vae_history = vae_trainer.train(
         epochs=config.NUM_EPOCHS
     )
 
-    os.makedirs("checkpoints", exist_ok=True)
+    vae_trainer.save_model(
+        "checkpoints/vae_model.pth"
+    )
 
-    trainer.save_model("checkpoints/vae_model.pth")
+    print("VAE training completed successfully.")
+
+    # ----------------------------------------
+    # Train GAN
+    # ----------------------------------------
+
     print("\nInitializing GAN...")
 
     generator = Generator()
@@ -56,22 +80,31 @@ def main():
     )
 
     gan_history = gan_trainer.train(
-    epochs=config.NUM_EPOCHS
-   )
+        epochs=config.NUM_EPOCHS
+    )
 
     gan_trainer.save_generator(
-    "checkpoints/generator.pth"
-   )
+        "checkpoints/generator.pth"
+    )
 
-   gan_trainer.save_discriminator(
-   "checkpoints/discriminator.pth"
-  )
+    gan_trainer.save_discriminator(
+        "checkpoints/discriminator.pth"
+    )
 
-   print("\nGAN training completed successfully.")
-    gan_history = gan_trainer
-    print("Training completed successfully.")
+    print("GAN training completed successfully.")
 
-    return history
+    # ----------------------------------------
+    # Finished
+    # ----------------------------------------
+
+    print("\n" + "=" * 60)
+    print("Hybrid VAE-AttentionGAN-GMM Training Completed")
+    print("=" * 60)
+
+    return {
+        "vae": vae_history,
+        "gan": gan_history
+    }
 
 
 if __name__ == "__main__":
