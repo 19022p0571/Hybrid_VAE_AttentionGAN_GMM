@@ -67,4 +67,59 @@ class VAETrainer:
             "reconstruction": total_reconstruction / n,
             "kl": total_kl / n
         }
-      
+
+
+class VAETrainer:
+
+    def __init__(self, model, train_loader):
+        ...
+    
+    def train_epoch(self):
+        ...
+        return {
+            "loss": total_loss / n,
+            "reconstruction": total_reconstruction / n,
+            "kl": total_kl / n
+        }
+
+    def train(self, epochs):
+        """
+        Train the VAE for multiple epochs.
+        """
+
+        history = []
+
+        print("=" * 60)
+        print("Starting VAE Training")
+        print("=" * 60)
+
+        for epoch in range(epochs):
+
+            metrics = self.train_epoch()
+
+            history.append(metrics)
+
+            print(
+                f"Epoch [{epoch + 1}/{epochs}] "
+                f"Loss: {metrics['loss']:.6f} | "
+                f"Recon: {metrics['reconstruction']:.6f} | "
+                f"KL: {metrics['kl']:.6f}"
+            )
+
+        print("=" * 60)
+        print("Training completed.")
+        print("=" * 60)
+
+        return history
+
+    def save_model(self, filepath):
+        """
+        Save trained VAE model.
+        """
+
+        torch.save(
+            self.model.state_dict(),
+            filepath
+        )
+
+        print(f"Model saved to: {filepath}")
