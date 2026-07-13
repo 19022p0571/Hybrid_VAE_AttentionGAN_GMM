@@ -141,6 +141,8 @@ class VAE(nn.Module):
         reconstruction = self.decoder(z)
 
         return reconstruction, mu, logvar
+
+
 import torch.nn.functional as F
 
 
