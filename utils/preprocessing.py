@@ -142,3 +142,118 @@ class Sentinel2Preprocessor:
         for band, file in self.band_files.items():
 
             print(f"{band} -> {os.path.basename(file)}")
+    def read_band(self, filename, out_shape=None):
+        """
+        Read a Sentinel-2 band.
+        If out_shape is provided, the image is resampled.
+        """
+
+        with rasterio.open(filename) as src:
+
+            if out_shape is None:
+
+                image = src.read(1)
+
+            else:
+
+                image = src.read(
+                    1,
+                    out_shape=out_shape,
+                    resampling=Resampling.bilinear
+                )
+
+        return image
+
+    def load_bands(self):
+        """
+        Load and stack the six Sentinel-2 bands.
+        """
+
+        print("\nLoading Sentinel-2 Bands...")
+
+        blue = self.read_band(
+            self.band_files["B02"]
+        )
+
+        green = self.read_band(
+            self.band_files["B03"]
+        )
+
+        red = self.read_band(
+            self.band_files["B04"]
+        )
+
+        nir = self.read_band(
+            self.band_files["B08"]
+        )
+
+        target_shape = blue.shape
+
+        swir1 = self.read_band(
+            self.band_files["B11"],
+            out_shape=target_shape
+        )
+
+        swir2 = self.read_band(
+            self.band_files["B12"],
+            out_shape=target_shape
+        )
+
+        self.image = np.stack(
+            [
+                blue,
+                green,
+                red,
+                nir,
+                swir1,
+                swir2
+            ],
+            axis=-1
+        ).astype(np.float32)
+
+        print("Stacked Image Shape:", self.image.shape)
+
+        return self.image
+
+    def normalize(self):
+        """
+        Normalize Sentinel-2 reflectance values.
+        """
+
+        if self.image is None:
+            raise ValueError("Image not loaded.")
+
+        self.image = self.image / 10000.0
+        self.image = np.clip(self.image, 0.0, 1.0)
+
+        print(
+            "Normalized Range:",
+            self.image.min(),
+            self.image.max()
+        )
+
+        return self.image
+
+    def show_rgb(self):
+        """
+        Display RGB image.
+        """
+
+        if self.image is None:
+            raise ValueError("Image not loaded.")
+
+        rgb = self.image[:, :, [2, 1, 0]]
+
+        plt.figure(figsize=(8, 8))
+
+        plt.imshow(rgb)
+
+        plt.title("Sentinel-2 RGB")
+
+        plt.axis("off")
+
+        plt.show()
+
+
+
+
