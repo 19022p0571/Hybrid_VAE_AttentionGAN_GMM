@@ -43,7 +43,19 @@ def main():
     os.makedirs("checkpoints", exist_ok=True)
 
     trainer.save_model("checkpoints/vae_model.pth")
+    print("\nInitializing GAN...")
 
+    generator = Generator()
+
+    discriminator = Discriminator()
+
+    gan_trainer = GANTrainer(
+    generator,
+    discriminator,
+    train_loader
+    )
+
+    gan_history = gan_trainer
     print("Training completed successfully.")
 
     return history
