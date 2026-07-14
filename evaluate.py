@@ -77,6 +77,35 @@ def evaluate():
     print(f"Average Reconstruction Loss : {reconstruction_loss:.6f}")
     print(f"Average Discriminator Score : {discriminator_score:.6f}")
     print("-" * 40)
+    import os
+
+    os.makedirs("outputs", exist_ok=True)
+
+    results = f"""
+    ========================================
+    Hybrid VAE-AttentionGAN-GMM Evaluation
+    ========================================
+
+    Average Reconstruction Loss : {reconstruction_loss:.6f}
+    Average Discriminator Score : {discriminator_score:.6f}
+    """
+
+    print(results)
+
+    with open("outputs/evaluation_results.txt", "w") as f:
+    	f.write(results)
+
+    print("Results saved to outputs/evaluation_results.txt")
+    import csv
+
+    with open("outputs/metrics.csv", "w", newline="") as csvfile:
+    	writer = csv.writer(csvfile)
+
+    writer.writerow(["Metric", "Value"])
+    writer.writerow(["Average Reconstruction Loss", reconstruction_loss])
+    writer.writerow(["Average Discriminator Score", discriminator_score])
+
+    print("Metrics saved to outputs/metrics.csv")
 
 
 if __name__ == "__main__":
